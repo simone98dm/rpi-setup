@@ -16,4 +16,4 @@ $ sudo docker volume create --name=influxdb-volume
 
 ## Configurations
 
-Fix telegraf `telegraf.conf` if ip and influxdb user:pass are correct
+Fix `telegraf.conf` if ip and influxdb user:pass are correct
