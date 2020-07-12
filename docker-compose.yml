@@ -1,0 +1,103 @@
+version: '3'
+services:
+    grafana:
+        image: grafana/grafana
+        container_name: grafana
+        restart: always
+        ports:
+            - 3000:3000
+        networks:
+            - monitoring
+        volumes:
+            - grafana-volume:/vol01/Docker/monitoring
+    influxdb:
+        image: influxdb
+        container_name: influxdb
+        restart: always
+        ports:
+            - 8086:8086
+        networks:
+            - monitoring
+        volumes:
+            - influxdb-volume:/vol01/Docker/monitoring
+        environment:
+            - INFLUXDB_DB=telegraf
+            - INFLUXDB_USER=telegraf
+            - INFLUXDB_ADMIN_ENABLED=true
+
+            - INFLUXDB_ADMIN_USER=admin
+            - INFLUXDB_ADMIN_PASSWORD=changeme
+    telegraf:
+        image: telegraf
+        container_name: telegraf
+        restart: always
+        extra_hosts:
+            - 'influxdb:192.168.0.110'
+        environment:
+            HOST_PROC: /rootfs/proc
+            HOST_SYS: /rootfs/sys
+            HOST_ETC: /rootfs/etc
+        volumes:
+            - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /sys:/rootfs/sys:ro
+            - /proc:/rootfs/proc:ro
+            - /etc:/rootfs/etc:ro
+    pihole:
+        container_name: pihole
+        image: pihole/pihole:latest
+        ports:
+            - '53:53/tcp'
+            - '53:53/udp'
+            - '67:67/udp'
+            - '80:80/tcp'
+            - '443:443/tcp'
+        environment:
+            TZ: 'Europe/Rome'
+            WEBPASSWORD: 'changeme'
+        volumes:
+            - './etc-pihole/:/etc/pihole/'
+            - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+        dns:
+            - 127.0.0.1
+            - 1.1.1.1
+        cap_add:
+            - NET_ADMIN
+        restart: unless-stopped
+    transmission:
+        image: linuxserver/transmission
+        container_name: transmission
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Europe/Rome
+            - TRANSMISSION_WEB_HOME=/combustion-release/
+            - USER=simone
+            - PASS=changeme
+        volumes:
+            - /home/docker/transmission/config:/config
+            - /home/docker/transmission/downloads/:/downloads
+            - /home/docker/transmission/watch folder:/watch
+        ports:
+            - 9091:9091
+            - 51413:51413
+            - 51413:51413/udp
+        restart: unless-stopped
+    portainer:
+        image: portainer/portainer
+        command: -H unix:///var/run/docker.sock
+        restart: always
+        ports:
+            - 9000:9000
+            - 8000:8000
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - portainer_data:/data
+networks:
+    monitoring:
+volumes:
+    portainer_data:
+    grafana-volume:
+        external: true
+    influxdb-volume:
+        external: true
