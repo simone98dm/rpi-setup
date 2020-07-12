@@ -9,7 +9,7 @@ services:
         networks:
             - monitoring
         volumes:
-            - grafana-volume:/vol01/Docker/monitoring
+            - grafana-volume:/Docker/monitoring
     influxdb:
         image: influxdb
         container_name: influxdb
@@ -19,7 +19,7 @@ services:
         networks:
             - monitoring
         volumes:
-            - influxdb-volume:/vol01/Docker/monitoring
+            - influxdb-volume:/Docker/monitoring
         environment:
             - INFLUXDB_DB=telegraf
             - INFLUXDB_USER=telegraf
@@ -80,8 +80,8 @@ services:
             - /home/docker/transmission/watch folder:/watch
         ports:
             - 9091:9091
-            - 51413:51413
-            - 51413:51413/udp
+            - 9999:51413
+            - 9999:51413/udp
         restart: unless-stopped
     portainer:
         image: portainer/portainer
@@ -101,14 +101,15 @@ services:
             - sqlserver_data:/data
         environment:
             - ACCEPT_EULA=Y
-            - SA_PASSWORD=changeme
+            - SA_PASSWORD=P4$$W0rD!
         ports:
-            - 1433:1433
+            - 9998:1433
 networks:
     monitoring:
 volumes:
     portainer_data:
     sqlserver_data:
+    grafana-volume:
         external: true
     influxdb-volume:
         external: true
