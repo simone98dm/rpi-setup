@@ -38,7 +38,7 @@ services:
             HOST_SYS: /rootfs/sys
             HOST_ETC: /rootfs/etc
         volumes:
-            - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+            - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - /sys:/rootfs/sys:ro
             - /proc:/rootfs/proc:ro
@@ -56,8 +56,8 @@ services:
             TZ: 'Europe/Rome'
             WEBPASSWORD: 'changeme'
         volumes:
-            - './etc-pihole/:/etc/pihole/'
-            - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+            - './pihole/etc-pihole/:/etc/pihole/'
+            - './pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
         dns:
             - 127.0.0.1
             - 1.1.1.1
