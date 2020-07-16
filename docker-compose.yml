@@ -75,9 +75,9 @@ services:
             - USER=simone
             - PASS=changeme
         volumes:
-            - /home/docker/transmission/config:/config
-            - /home/docker/transmission/downloads/:/downloads
-            - /home/docker/transmission/watch folder:/watch
+            - ./transmission/config:/config
+            - ./transmission/downloads/:/downloads
+            - ./transmission/watch folder:/watch
         ports:
             - 9091:9091
             - 9999:51413
