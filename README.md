@@ -12,6 +12,7 @@ This compose was tested on RaspberryPi 4 (4gb) with Raspberrypi OS
 2. Install [docker](https://docs.docker.com/engine/install/debian/)
 3. Change the password from 'changeme' and 'P4\$\$W0rD!' to whatever you want
 4. On `telegraf.conf`, change ip and influxdb user:pass
+5. Check if transmission configs are good to be used
 
 N.B: SqlServer needs a strong password (with special chars, number and capital letter)
 
