@@ -30,4 +30,5 @@ Run this command on your raspberrypi
 
 ```bash
 $ sudo docker-compose up -d
+$ docker exec tor-gateway cat /var/lib/tor/onion_services/app/hostname
 ```
