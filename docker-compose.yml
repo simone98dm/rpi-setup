@@ -32,7 +32,7 @@ services:
         container_name: telegraf
         restart: always
         extra_hosts:
-            - 'influxdb:192.168.1.100'
+            - 'influxdb:127.0.0.1'
         environment:
             HOST_PROC: /rootfs/proc
             HOST_SYS: /rootfs/sys
@@ -50,7 +50,7 @@ services:
             - '53:53/tcp'
             - '53:53/udp'
             - '67:67/udp'
-            - '80:80/tcp'
+            - '8080:80/tcp'
             - '443:443/tcp'
         environment:
             TZ: 'Europe/Rome'
@@ -95,14 +95,16 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - portainer_data:/data
     onionize:
+        container_name: tor-gateway
         image: rriclet/onionize:arm32v7
         volumes:
             - /var/run/docker.sock:/tmp/docker.sock:ro
         networks:
             - faraday
-      
+
     nextcloud:
         image: nextcloud:apache
+        container_name: nextcloud
         environment:
             - ONIONSERVICE_NAME=app
         networks:
@@ -119,16 +121,17 @@ services:
         restart: unless-stopped
     db:
         image: linuxserver/mariadb:arm32v7-latest
+        container_name: nextcloud-db
         networks:
-          - faraday
+            - faraday
         volumes:
-          - db:/var/lib/mysql
-          - /etc/localtime:/etc/localtime:ro
+            - db:/var/lib/mysql
+            - /etc/localtime:/etc/localtime:ro
         environment:
-          - MYSQL_ROOT_PASSWORD=password
-          - MYSQL_PASSWORD=mysql
-          - MYSQL_DATABASE=nextcloud
-          - MYSQL_USER=nextcloud
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_PASSWORD=mysql
+            - MYSQL_DATABASE=nextcloud
+            - MYSQL_USER=nextcloud
         restart: unless-stopped
 
 networks:
@@ -137,7 +140,6 @@ networks:
         driver: bridge
 volumes:
     portainer_data:
-    sqlserver_data:
     grafana-volume:
         external: true
     influxdb-volume:
